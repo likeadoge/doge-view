@@ -1,0 +1,17 @@
+{
+    "name": "doge-view",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "pre": "npm install",
+        "serve": "node ./server.js -p 8888"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "koa": "^2.13.0",
+        "koa-static": "^5.0.0"
+    }
+}
