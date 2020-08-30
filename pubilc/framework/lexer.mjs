@@ -16,7 +16,6 @@ export class LexerEndNode extends LexerNode {
 export class LexerTextNode extends LexerNode {
     static match = /([\d|\D]*)/
 }
-
 export class LexerIfNode extends LexerNode {
     static match = /(<\!--if\([\w|\W]+?\)-->)/
     constructor(content) {
@@ -24,7 +23,6 @@ export class LexerIfNode extends LexerNode {
         super(content, { code })
     }
 }
-
 export class LexerElseNode extends LexerNode {
     static match = /(<\!--else(?:\([\w|\W]+?\))?-->)/
     constructor(content) {
@@ -32,7 +30,6 @@ export class LexerElseNode extends LexerNode {
         super(content, { code })
     }
 }
-
 export class LexerCodeNode extends LexerNode {
     static match = /(\{\{[\w|\W]+?\}\})/
     constructor(content) {
@@ -40,7 +37,6 @@ export class LexerCodeNode extends LexerNode {
         super(content, { code })
     }
 }
-
 export class LexerLoopNode extends LexerNode {
     static match = /(<\!--loop(?:<\w+(?:,\w+)?>)?\([\w|\W]+?\)-->)/
     constructor(content) {
@@ -58,12 +54,12 @@ export class LexerLoopNode extends LexerNode {
 
 export function lexer(template) {
     return [
+        LexerCodeNode,
         LexerLoopNode,
         LexerIfNode,
         LexerElseNode,
         LexerEndNode,
         LexerOverNode,
-        LexerCodeNode,
         LexerTextNode
     ].reduce((res, LexerClass) => res.flatMap(node =>
         typeof node !== 'string'
