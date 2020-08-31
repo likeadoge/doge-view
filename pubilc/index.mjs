@@ -8,6 +8,7 @@ import {
     LexerCodeNode,
     LexerTextNode
 } from './framework/Lexer.mjs'
+import { parser } from './framework/parser.mjs'
 
 
 lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
@@ -32,3 +33,6 @@ lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
 ).filter(v=>!!v).forEach(span => {
     document.getElementById('app').appendChild(span)
 })
+
+
+parser(document.getElementById('tpl').innerHTML)
