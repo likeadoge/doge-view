@@ -17,5 +17,6 @@ const app = new koa();
 app.use(static(path.resolve(process.cwd(), './')));
 // 监听端口
 app.listen(port, function() {
-    console.log(`启动成功:${port}`);
+    console.log(`启动成功!`);
+    console.log(`http://localhost:${port}`);
 })

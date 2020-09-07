@@ -60,6 +60,22 @@ import {
     LexerTextNode
 } from './lexer.mjs'
 
+class ParserNode {
+    childeren = []
+}
+
+export class ParserProgarmNode extends ParserNode {
+
+}
+export class ParserExprNode extends ParserNode {
+}
+export class ParserExprListNode extends ParserNode {
+}
+export class ParserIfTailNode extends ParserNode {
+}
+
+
+
 class Parser {
     static $$ = undefined
 
@@ -86,71 +102,96 @@ class Parser {
             ? this.#tokens.shift()
             : this.error()
     }
-
     program() {
+        const node = new ParserProgarmNode()
+
         if (this.#exist(
             LexerTextNode,
             LexerCodeNode,
             LexerLoopNode,
             LexerIfNode
         )) {
-            this.expr_list()
-            this.#match(Parser.$$)
+            node.childeren = node.childeren.concat([
+                this.expr_list(),
+                this.#match(Parser.$$)
+            ])
+
         } else {
             this.#error()
         }
-    }
 
+        return node
+    }
     expr_list() {
+        const node = new ParserExprListNode()
         if (this.#exist(
             LexerTextNode,
             LexerCodeNode,
             LexerLoopNode,
             LexerIfNode
         )) {
-            this.expr();
-            this.expr_list()
+            node.childeren = node.childeren.concat([
+                this.expr(),
+                this.expr_list()
+            ])
         }
+        return node
     }
-
     expr() {
-        if (this.#exist(LexerTextNode)) {
-            this.#match(LexerTextNode)
-        } else if (this.#exist(LexerCodeNode)) {
-            this.#match(LexerCodeNode)
-        } else if (this.#exist(LexerLoopNode)) {
-            this.#match(LexerLoopNode)
-            this.expr_list()
-            this.#match(LexerOverNode)
-        } else if (this.#exist(LexerIfNode)) {
-            this.#match(LexerIfNode)
-            this.expr_list()
-            this.if_tail()
-        } else {
-            this.#error()
-        }
-    }
+        const node = new ParserExprNode()
 
-    if_tail() {
-        if (this.#exist(LexerElseNode)) {
-            this.#match(LexerElseNode)
-            this.expr_list()
-            this.if_tail()
-        } else if (this.#exist(LexerEndNode)) {
-            this.#match(LexerEndNode)
+        if (this.#exist(LexerTextNode)) {
+            node.childeren = node.childeren.concat([
+                this.#match(LexerTextNode)
+            ])
+        } else if (this.#exist(LexerCodeNode)) {
+            node.childeren = node.childeren.concat([
+                this.#match(LexerCodeNode)
+            ])
+        } else if (this.#exist(LexerLoopNode)) {
+            node.childeren = node.childeren.concat([
+                this.#match(LexerLoopNode),
+                this.expr_list(),
+                this.#match(LexerOverNode)
+            ])
+        } else if (this.#exist(LexerIfNode)) {
+            node.childeren = node.childeren.concat([
+                this.#match(LexerIfNode),
+                this.expr_list(),
+                this.if_tail()
+            ])
         } else {
             this.#error()
         }
+
+        return node
+    }
+    if_tail() {
+        const node = new ParserIfTailNode()
+        if (this.#exist(LexerElseNode)) {
+            node.childeren = node.childeren.concat([
+                this.#match(LexerElseNode),
+                this.expr_list(),
+                this.if_tail(),
+            ])
+        } else if (this.#exist(LexerEndNode)) {
+            node.childeren = node.childeren.concat([
+                this.#match(LexerEndNode)
+            ])
+        } else {
+            this.#error()
+        }
+
+        return node
     }
 }
 
 
 
-export function parser(tmpl){
+export function parser(tmpl) {
     const tokens = lexer(tmpl)
     const s = new Parser(tokens)
-    s.program()
-    console.log(s)
+    return s.program()
 }
 
 
