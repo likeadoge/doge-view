@@ -52,6 +52,30 @@ export class LexerLoopNode extends LexerNode {
     }
 }
 
+
+export class LexerAttrNode extends LexerNode {
+    static match = /(<\!--\s*(?:(?:\s*\[\w+\]\s*=\s*"[\w|\W]+?"\s*)|(?:\s*\(\w+\)\s*=\s*"[\w|\W]+?"\s*))+\s*-->)/
+    // constructor(content) {
+    //     const input = content.match(/<\!--loop(?:<(\w+(?:,\w+))?>)?\([\w|\W]+?\)-->/)[1]
+    //     const code = content.match(/<\!--loop(?:<\w+(?:,\w+)?>)?\(([\w|\W]+?)\)-->/)[1]
+
+    //     super(content, {
+    //         input: input && input.trim()
+    //             ? input.split(',').map(v => v.trim())
+    //             : [],
+    //         code
+    //     })
+    // }
+}
+
+export class LexerAttrEndNode extends LexerNode {
+    static match = /(<\!--\S*\/\S*-->)/
+}
+
+
+
+
+
 export function lexer(template) {
     return [
         LexerCodeNode,
@@ -59,8 +83,10 @@ export function lexer(template) {
         LexerIfNode,
         LexerElseNode,
         LexerEndNode,
-        LexerOverNode,
-        LexerTextNode
+        LexerOverNode, 
+        LexerAttrNode,
+        LexerAttrEndNode,
+        LexerTextNode,
     ].reduce((res, LexerClass) => res.flatMap(node =>
         typeof node !== 'string'
             ? [node]
