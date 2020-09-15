@@ -58,7 +58,9 @@ import {
     LexerEndNode,
     LexerOverNode,
     LexerCodeNode,
-    LexerTextNode
+    LexerTextNode,
+    LexerAttrNode,
+    LexerAttrEndNode,
 } from './lexer.mjs'
 
 class ParserNode {
@@ -66,7 +68,6 @@ class ParserNode {
 }
 
 export class ParserProgarmNode extends ParserNode {
-
 }
 export class ParserExprNode extends ParserNode {
 }
@@ -110,7 +111,8 @@ class Parser {
             LexerTextNode,
             LexerCodeNode,
             LexerLoopNode,
-            LexerIfNode
+            LexerIfNode,
+            LexerAttrNode
         )) {
             node.childeren = node.childeren.concat([
                 this.expr_list(),
@@ -129,7 +131,8 @@ class Parser {
             LexerTextNode,
             LexerCodeNode,
             LexerLoopNode,
-            LexerIfNode
+            LexerIfNode,
+            LexerAttrNode
         )) {
             node.childeren = node.childeren.concat([
                 this.expr(),
@@ -161,7 +164,13 @@ class Parser {
                 this.expr_list(),
                 this.if_tail()
             ])
-        } else {
+        } else if (this.#exist(LexerAttrNode)) {
+            node.childeren = node.childeren.concat([
+                this.#match(LexerAttrNode),
+                this.expr_list(),
+                this.#match(LexerAttrEndNode)
+            ])
+        }else {
             this.#error()
         }
 

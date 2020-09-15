@@ -38,5 +38,9 @@ lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
     document.getElementById('app').appendChild(span)
 })
 
-// console.log(parser(document.getElementById('tpl').innerHTML))
+
+console.log(parser(document.getElementById('tpl').innerHTML))
+
+
+
 
