@@ -9,6 +9,7 @@ import {
     LexerTextNode
 } from './framework/Lexer.mjs'
 import { parser } from './framework/parser.mjs'
+import { toAstNodeList } from './framework/ast.mjs'
 
 
 lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
@@ -35,4 +36,5 @@ lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
 })
 
 console.log(parser(document.getElementById('tpl').innerHTML))
+console.log(toAstNodeList(parser(document.getElementById('tpl').innerHTML)))
 
