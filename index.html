@@ -15,19 +15,12 @@
         <div>
             <!--loop(new Array(times).fill(null))-->
             <ol>
-                <!--loop<option,index>(list)-->
+                <!--loop<value,index>(list)-->
                 <li>
-                    <!--if(option.type === 'text')-->
-                    <span>{{option.text}}</span>
-                    <!--else(option.type === 'input')-->
-
-                    <!--
-                        [value] = "option.value"
-                        (click) = "() => alert(option.value)"
-                    -->
-                    <input type="text"/>
-                    <!--/-->
-
+                    <!--if(value.type === 'text')-->
+                    <span>{{value.text}}</span>
+                    <!--else(value.type === 'input')-->
+                    <input type="text" value="{{value.value}}" />
                     <!--else-->
                     <b style="color:red">Error Value</b>
                     <!--end-->
