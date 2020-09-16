@@ -6,7 +6,9 @@ import {
     LexerEndNode,
     LexerOverNode,
     LexerCodeNode,
-    LexerTextNode
+    LexerTextNode,
+    LexerAttrNode,
+    LexerAttrEndNode
 } from './framework/Lexer.mjs'
 import { parser } from './framework/parser.mjs'
 
@@ -19,6 +21,8 @@ lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
         [LexerElseNode,'#D80000'],
         [LexerEndNode,'#66ccff'],
         [LexerCodeNode,'#39C5BB'],
+        [LexerAttrNode,"#666666"],
+        [LexerAttrEndNode,"#666666"],
         [LexerTextNode,"#cccccc"]
     ].map(([Cls,color])=>{
         if(v instanceof Cls){
@@ -34,13 +38,9 @@ lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
     document.getElementById('app').appendChild(span)
 })
 
-<<<<<<< HEAD
 
 console.log(parser(document.getElementById('tpl').innerHTML))
 
 
 
-=======
-console.log(parser(document.getElementById('tpl').innerHTML))
->>>>>>> parent of 023fdfd... 添加 LexerAttrNode 正则
 
