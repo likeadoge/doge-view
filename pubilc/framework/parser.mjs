@@ -43,7 +43,6 @@
 *             => code 
 *             => loop <expr_list> over
 *             => if <expr_list> <if_tail> 
-*             => attr <expr_list> attr_end
 * 
 * <if_tail>   => else <expr_list> <if_tail>
 *             => end
