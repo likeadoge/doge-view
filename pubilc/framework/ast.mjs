@@ -23,6 +23,8 @@ export class AstNode {
     constructor(target, globe, parent) {
         this.scope = parent ? Scope.extend(parent.scope) : globe
     }
+
+    toHtml(data){return ''}
 }
 
 export class AstTextNode extends AstNode {
@@ -31,38 +33,69 @@ export class AstTextNode extends AstNode {
         super(target, globe, parent)
         this.content = target.content
     }
+    toHtml(data){return this.content}
 }
 
 export class AstCodeNode extends AstNode {
-    code = ''
+    #code = ''
+    #fn = null
     constructor(target, globe, parent) {
         super(target, globe, parent)
-        this.code = target.data.code
+        this.#code = target.data.code
+        this.#fn = new Func(this.scope,this.#code)
     }
+    toHtml(data){return this.#fn.apply(data)}
 }
 
 export class AstIfNode extends AstNode {
     else = null
-    code = ''
+    #code = ''
+    #fn = null
     constructor(target, globe, parent) {
         super(target, globe, parent)
-        this.code = target.data.code
+        this.#code = target.data.code
+        this.#fn = new Func(this.scope,this.#code)
     }
+
+    toHtml(data){
+        const s = this.#fn.apply(data)
+        if(s){
+            return this.children.map(v=>v.toHtml(data)).join('')
+        }else if(this.else){
+            return this.else.toHtml(data)
+        }else{
+            return ''
+        }
+    }
+
 }
 
 export class AstLoopNode extends AstNode {
-    valueField = ''
-    indexField = ''
-    code = ''
+    #valueField = ''
+    #indexField = ''
+    #code = ''
+    #fn = null
 
     constructor(target, globe, parent) {
         super(target, globe, parent)
-        this.code = target.data.code
-        this.valueField = target.data.input[0] || null
-        this.indexField = target.data.input[1] || null
+        this.#code = target.data.code
+        this.#valueField = target.data.input[0] || null
+        this.#indexField = target.data.input[1] || null
         this.scope = Scope.extend(parent.scope, [
-            this.valueField, this.indexField
+            this.#valueField, this.#indexField
         ].filter(v=>v))
+        this.#fn = new Func(this.scope,this.#code)
+    }
+    toHtml(data){
+        const s = this.#fn.apply(data)
+        return s.map((value,index)=>{
+            return this.children.map(v=>v.toHtml(Object.assign(
+                {},
+                data,
+                this.#valueField?{[this.#valueField]:value}:null,
+                this.#indexField?{[this.#indexField]:index}:null
+            )))
+        }).flat().join('')
     }
 
 }
@@ -72,6 +105,9 @@ export class AstProgramNode extends AstNode {
     constructor(target, globe, parent) {
         super(target, globe, parent)
         this.scope = globe
+    }
+    toHtml(data){
+        return this.children.map(v=>v.toHtml(data)).join('')
     }
 }
 
