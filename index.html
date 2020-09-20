@@ -14,27 +14,21 @@
 
     <template id="tpl">
         <div>
-            <!---loop="new Array(times).fill(null)"--->
+            <!--loop(new Array(times).fill(null))-->
             <ol>
-                <!---loop<value,index>="list"--->
+                <!--loop<value,index>(list)-->
                 <li>
-                    <!---case="value.type === 'text'"--->
+                    <!--if(value.type === 'text')-->
                     <span>{{value.text}}</span>
-                    <!--#
-                        costom 
-                        case="value.type === 'input'"
-                        loop<index,html>="value.type === 'input'"
-                        [value]="value.value"
-                        {click}=""
-                    --->
-                    <input type="text" />
-                    <!--#else--->
+                    <!--else(value.type === 'input')-->
+                    <input type="text" value="{{value.value}}" />
+                    <!--else-->
                     <b style="color:red">Error Value</b>
-                    <!---/--->
+                    <!--end-->
                 </li>
-                <!---/--->
+                <!--over-->
             </ol>
-            <!---/--->
+            <!--over-->
         </div>
     </template>
 </body>

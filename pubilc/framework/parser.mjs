@@ -1,5 +1,38 @@
 
 
+
+/**
+ * <progarm>  => <expr>  $$
+ *            => $$
+
+ * <expr>     => <expr> <expr>
+ *            => text
+ *            => code 
+ *            => loop <expr> over
+ *            => loop over
+ *            => if <expr> <if_tail> 
+ *            => if <if_tail>  
+ * 
+ * <if_tail>  => end
+ *            => else <expr> <if_tail>
+ *            => else <if_tail>
+ */
+
+/**
+* <progarm>  => <expr> $$
+
+* <expr>     => <expr> <expr>
+*            => text
+*            => code 
+*            => loop <expr> over
+*            => if <expr> <if_tail> 
+*            => ε
+* 
+* <if_tail>  => else <expr> <if_tail>
+*            => end
+*/
+
+
 /**
 * <progarm>   => <expr_list> $$
 * 
@@ -7,11 +40,12 @@
 *             => ε
 * 
 * <expr>      => text
-*             => html 
-*             => head <expr_list> <next>
+*             => code 
+*             => loop <expr_list> over
+*             => if <expr_list> <if_tail> 
 * 
-* <next>      => subhead <expr_list> <next>
-*             => tail
+* <if_tail>   => else <expr_list> <if_tail>
+*             => end
 */
 
 
