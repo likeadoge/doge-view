@@ -1,28 +1,14 @@
-import {
-    lexer,
-    LexerLoopNode,
-    LexerIfNode,
-    LexerElseNode,
-    LexerEndNode,
-    LexerOverNode,
-    LexerCodeNode,
-    LexerTextNode
-} from './framework/Lexer.mjs'
-import { parser } from './framework/parser.mjs'
-import { toAst } from './framework/ast.mjs'
+import Token,{Head,SubHead,Tail,Text,Html} from './framework/Token.mjs'
 
-
-lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
+Token.scan(document.getElementById('tpl').innerHTML).flatMap(v =>
     [
-        [LexerLoopNode,'#FFA500'],
-        [LexerOverNode,'#FFE211'],
-        [LexerIfNode,'#FFC0CB'],
-        [LexerElseNode,'#D80000'],
-        [LexerEndNode,'#66ccff'],
-        [LexerCodeNode,'#39C5BB'],
-        [LexerTextNode,"#cccccc"]
+        [SubHead,'#FFC0CB'],
+        [Head,'#FFA500'],
+        [Tail,'#FFE211'],
+        [Text,'#66ccff'],
+        [Html,'#39C5BB'],
     ].map(([Cls,color])=>{
-        if(v instanceof Cls){
+        if(v.__proto__.constructor === Cls){
             const span = document.createElement('span')
             span.innerText = v.content.split(' ').join('-')
             span.style.background = color
@@ -35,23 +21,4 @@ lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
     document.getElementById('app').appendChild(span)
 })
 
-console.log(parser(document.getElementById('tpl').innerHTML))
 
-const ast = toAst(parser(document.getElementById('tpl').innerHTML),{
-    times:null,
-    list:null,
-})
-console.log(ast )
-
-document.getElementById('ast').innerHTML = ast.toHtml({
-    times: 3,
-        list: [{
-            type: 'text',
-            text: 'test'
-        }, {
-            type: 'input',
-            value: 'test'
-        }, {
-
-        }]
-})
