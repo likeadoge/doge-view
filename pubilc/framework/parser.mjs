@@ -15,12 +15,12 @@
 */
 
 
-import Token,{
-    Html,
-    Text,
-    Head,
-    SubHead,
-    Tail,
+import Token, {
+    TokenHtmlNode,
+    TokenTextNode,
+    TokenHeadNode,
+    TokenSubHeadNode,
+    TokenTailNode,
 } from './Token.mjs'
 
 class ParserNode {
@@ -37,7 +37,13 @@ export class ParserExprListNode extends ParserNode {
 export class ParserNextNode extends ParserNode {
 }
 
-class Parser {
+export class Parser {
+    static gen(tmpl){
+        const tokens = Token.scan(tmpl)
+        const s = new Parser(tokens)
+        return s.program()
+    }
+
     static $$ = undefined
 
     constructor(list) {
@@ -67,9 +73,9 @@ class Parser {
         const node = new ParserProgarmNode()
 
         if (this.#exist(
-            Text,
-            Html,
-            Head
+            TokenTextNode,
+            TokenHtmlNode,
+            TokenHeadNode
         )) {
             node.children = node.children.concat([
                 this.expr_list(),
@@ -85,9 +91,9 @@ class Parser {
     expr_list() {
         const node = new ParserExprListNode()
         if (this.#exist(
-            Text,
-            Html,
-            Head
+            TokenTextNode,
+            TokenHtmlNode,
+            TokenHeadNode
         )) {
             node.children = node.children.concat([
                 this.expr(),
@@ -99,17 +105,17 @@ class Parser {
     expr() {
         const node = new ParserExprNode()
 
-        if (this.#exist(Text)) {
+        if (this.#exist(TokenTextNode)) {
             node.children = node.children.concat([
-                this.#match(Text)
+                this.#match(TokenTextNode)
             ])
-        } else if (this.#exist(Html)) {
+        } else if (this.#exist(TokenHtmlNode)) {
             node.children = node.children.concat([
-                this.#match(Html)
+                this.#match(TokenHtmlNode)
             ])
-        } else if (this.#exist(Head)) {
+        } else if (this.#exist(TokenHeadNode)) {
             node.children = node.children.concat([
-                this.#match(Head),
+                this.#match(TokenHeadNode),
                 this.expr_list(),
                 this.next(),
             ])
@@ -121,15 +127,15 @@ class Parser {
     }
     next() {
         const node = new ParserNextNode()
-        if (this.#exist(SubHead)) {
+        if (this.#exist(TokenSubHeadNode)) {
             node.children = node.children.concat([
-                this.#match(SubHead),
+                this.#match(TokenSubHeadNode),
                 this.expr_list(),
                 this.next(),
             ])
-        } else if (this.#exist(Tail)) {
+        } else if (this.#exist(TokenTailNode)) {
             node.children = node.children.concat([
-                this.#match(Tail)
+                this.#match(TokenTailNode)
             ])
         } else {
             this.#error()
@@ -138,11 +144,4 @@ class Parser {
         return node
     }
 }
-
-export function parser(tmpl) {
-    const tokens = Token.scan(tmpl)
-    const s = new Parser(tokens)
-    return s.program()
-}
-
 
