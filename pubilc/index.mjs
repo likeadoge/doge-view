@@ -1,4 +1,5 @@
 import Token,{Head,SubHead,Tail,Text,Html} from './framework/Token.mjs'
+import {parser} from './framework/parser.mjs'
 
 Token.scan(document.getElementById('tpl').innerHTML).flatMap(v =>
     [
@@ -20,5 +21,8 @@ Token.scan(document.getElementById('tpl').innerHTML).flatMap(v =>
 ).filter(v=>!!v).forEach(span => {
     document.getElementById('app').appendChild(span)
 })
+
+console.log(parser(document.getElementById('tpl').innerHTML))
+
 
 

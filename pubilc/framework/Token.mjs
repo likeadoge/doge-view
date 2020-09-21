@@ -30,9 +30,7 @@ export default class Token {
     }
 }
 
-export class Head extends Token {
-
-    static match = new RegExp(`(<\\!---\\s*(?:${[Attr.re, Event.re, Directive.re].map(v => `(?:${v}\\s*)`).join("|")})*--->)`)
+class HeadCommon extends Token {
 
     constructor(content) {
         const attrs = []
@@ -54,7 +52,10 @@ export class Head extends Token {
     }
 }
 
-export class SubHead extends Head {
+export class Head extends HeadCommon {
+    static match = new RegExp(`(<\\!---\\s*(?:${[Attr.re, Event.re, Directive.re].map(v => `(?:${v}\\s*)`).join("|")})*--->)`)
+}
+export class SubHead extends HeadCommon {
     static match = new RegExp(`(<\\!--#\\s*(?:${[Attr.re, Event.re, Directive.re].map(v => `(?:${v}\\s*)`).join("|")})*--->)`)
 }
 
