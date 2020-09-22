@@ -28,6 +28,6 @@ console.log(Parser.gen(
     document.getElementById('tpl').innerHTML
 ))
 
-console.log(Ast.gen(
+console.log(window.ast = Ast.gen(
     document.getElementById('tpl').innerHTML
 ))
