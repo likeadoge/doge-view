@@ -20,14 +20,23 @@ Token.scan(document.getElementById('tpl').innerHTML).flatMap(v =>
         }
     })
 ).filter(v => !!v).forEach(span => {
-    document.getElementById('app').appendChild(span)
+    document.getElementById('lexer').appendChild(span)
 })
 
 
-console.log(Parser.gen(
+console.log('Parser',Parser.gen(
     document.getElementById('tpl').innerHTML
 ))
 
-console.log(window.ast = Ast.gen(
+console.log('AST',window.ast = Ast.gen(
     document.getElementById('tpl').innerHTML
 ))
+
+
+console.log('Vnode',window.node = Ast.gen(
+    document.getElementById('tpl').innerHTML
+).render())
+
+
+window.node.mount(document.querySelector('#app'))
+

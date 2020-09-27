@@ -15,6 +15,13 @@ import {
     Parser
 } from "./Parser.mjs"
 
+import {
+    TextNode,
+    GroupNode,
+    RootNode,
+    HtmlNode
+} from "./ViewNode.mjs"
+
 import * as rand from '/pubilc/utils/rand.mjs'
 
 export class Ast {
@@ -81,41 +88,31 @@ export class Ast {
             }
         }
 
-        return toAstNodeList(program, null)
+        return toAstNodeList(program, null)[0]
     }
     scope = null
     children = []
-
     id = ''
-    nodeList = []
-
     constructor() {
         this.id = 'el-' + rand.uuid()
     }
 
-    toHtml() { return `<template id="${this.id}"></template>` }
-    insertTo(pa) {
-        const target = document.createElement('template')
-        target.innerHTML = this.children.map(v => v.toHtml()).join('')
-        this.children.forEach(v => v.insertTo(target.content))
-        this.nodeList.forEach(v => v.remove())
-        this.nodeList = Array.from(target.content.childNodes)
-        pa.querySelector(`#${this.id}`).after(target.content)
-    }
 }
 
 export class AstRootNode extends Ast {
-
-    render() {
-        const result = document.createElement('div')
-        result.innerHTML = this.toHtml()
-        window.rrr = result
-        this.insertTo(result)
-        return result
+    render(){
+        const node = new RootNode()
+        node.children = this.children.map(v=>v.render(node))
+        return node
     }
 }
 
 export class AstTextNode extends Ast {
+    #content = '测试文字'
+    render(pa){
+        const node = new TextNode(pa,this.#content)
+        return node
+    }
 }
 
 export class AstHtmlNode extends Ast {
@@ -124,18 +121,26 @@ export class AstHtmlNode extends Ast {
         super()
         this.#content = node.content
     }
-    toHtml() {
-        return this.#content
+
+    render(pa){
+        const node = new HtmlNode(pa,this.#content)
+        return node
     }
-    insertTo(){}
 }
 
 export class AstFragmentNode extends Ast {
 
+    render(pa){
+        return this.children[0].render(pa)
+    }
 }
 
 export class AstElemntNode extends Ast {
-
+    render(pa){
+        const node = new GroupNode(pa)
+        node.children = this.children.map(v=>v.render(node))
+        return node
+    }
 }
 
 class Scope {

@@ -31,12 +31,12 @@ class ViewableNode {
     }
 }
 
-
-class TextNode extends ViewableNode {
+export class TextNode extends ViewableNode {
     nodeList = []
     text = ''
-    constructor(pa) {
+    constructor(pa,text) {
         super(`el_${Math.floor(Math.random() * 1e17)}`, pa)
+        this.text = text
     }
     render() {
         this.remove()
@@ -45,7 +45,26 @@ class TextNode extends ViewableNode {
     }
 }
 
-class GroupNode extends ViewableNode {
+
+export class HtmlNode extends ViewableNode {
+    html = ''
+    constructor(pa,html) {
+        super(`el_${Math.floor(Math.random() * 1e17)}`, pa)
+        this.html = html
+    }
+
+    genHtml(){
+        return this.html
+    }
+
+    render(){}
+
+    insertTo(){}
+
+    remove(){}
+}
+
+export class GroupNode extends ViewableNode {
     nodeList = []
 
     attr = {}
@@ -60,7 +79,7 @@ class GroupNode extends ViewableNode {
         this.remove()
 
         const target = document.createElement('template')
-        target.innerHTML = this.children.map(v => v.toHtml()).join('')
+        target.innerHTML = this.children.map(v => v.genHtml()).join('')
 
         this.children.forEach(v => {
             v.render()
@@ -83,6 +102,35 @@ class GroupNode extends ViewableNode {
             })
         })
     }
+
+}
+
+export class RootNode extends ViewableNode{
+    constructor(pa) {
+        super(`el_${Math.floor(Math.random() * 1e17)}`, pa)
+    }
+
+    render() {
+        this.remove()
+
+        const target = document.createElement('template')
+        target.innerHTML = this.children.map(v => v.genHtml()).join('')
+
+        this.children.forEach(v => {
+            v.render()
+            v.insertTo(target.content)
+        })
+
+        this.nodeList = Array.from(target.content.childNodes)
+
+    }
+    
+    mount(cntr){
+        cntr.innerHTML = this.genHtml()
+        this.render()
+        this.insertTo(cntr)
+    }
+    
 
 }
 
