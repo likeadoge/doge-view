@@ -1,4 +1,4 @@
-class ViewableNode {
+export class ViewableNode {
     parent = null
     anchorId = ''
     nodeList = []
@@ -44,7 +44,6 @@ export class TextNode extends ViewableNode {
         this.nodeList = [document.createTextNode(this.text)]
     }
 }
-
 
 export class HtmlNode extends ViewableNode {
     html = ''

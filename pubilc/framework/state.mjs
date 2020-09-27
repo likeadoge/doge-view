@@ -10,7 +10,7 @@ export class Attr {
         const [c, field, value] = content.match(`\\[\\s*(\\w+)\\s*\\](?:\\s*=\\s*"([\\w|\\W]*?)")?`)
         this.field = field
         this.value = (value || value === '') ? value : 'true'
-        console.log('Attr', this)
+        // console.log('Attr', this)
     }
 }
 
@@ -25,7 +25,7 @@ export class Event {
         const [c, field, value] = content.match(`\\{\\s*(\\w+)\\s*\\}(?:\\s*=\\s*"([\\w|\\W]*?)")?`)
         this.field = field
         this.value = (value || value === '') ? value : 'true'
-        console.log('Attr', this)
+        // console.log('Attr', this)
     }
 }
 
@@ -46,7 +46,7 @@ export class Directive {
         this.field = field
         this.input = input?input.split(',').map(v=>v.trim()):[]
         this.value = (value || value === '') ? value : 'true'
-        console.log('Directive', this)
+        // console.log('Directive', this)
     }
 }
 
@@ -63,6 +63,6 @@ export class FragDirective {
         this.field = field
         this.input = input?input.split(',').map(v=>v.trim()):[]
         this.value = (value || value === '') ? value : 'true'
-        console.log('FragDirective', this)
+        // console.log('FragDirective', this)
     }
 }

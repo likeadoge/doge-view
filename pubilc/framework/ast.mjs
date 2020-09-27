@@ -25,7 +25,7 @@ import {
 import * as rand from '/pubilc/utils/rand.mjs'
 
 export class Ast {
-    static gen(tmpl) {
+    static gen(tmpl, argus) {
         const program = Parser.gen(tmpl)
 
         const toAstNodeList = (current, globe, parent = null) => {
@@ -68,7 +68,7 @@ export class Ast {
 
                     astNode.children = [
                         astChildNode,
-                        ...toAstNodeList(next)
+                        ...toAstNodeList(next, globe, parent)
                     ]
                     return [astNode]
                 }
@@ -88,57 +88,65 @@ export class Ast {
             }
         }
 
-        return toAstNodeList(program, null)[0]
+        return toAstNodeList(program, new Scope(argus))[0]
     }
     scope = null
     children = []
     id = ''
-    constructor() {
+
+    constructor(current, globe, parent) {
         this.id = 'el-' + rand.uuid()
+        this.scope = Scope.extend(parent ? parent.scope : globe)
     }
 
 }
 
 export class AstRootNode extends Ast {
-    render(){
+
+    render(pa = null, data) {
         const node = new RootNode()
-        node.children = this.children.map(v=>v.render(node))
+        node.children = this.children.map(v => v.render(node, data))
         return node
     }
 }
 
 export class AstTextNode extends Ast {
-    #content = '测试文字'
-    render(pa){
-        const node = new TextNode(pa,this.#content)
+    #fn = null
+
+    constructor(current, globe, parent) {
+        super(current, globe, parent)
+        this.#fn = new Func(this.scope, current.data.code)
+    }
+    render(pa = null, data) {
+        const node = new TextNode(pa, this.#fn.apply(data))
         return node
     }
 }
 
 export class AstHtmlNode extends Ast {
     #content = ''
-    constructor(node) {
-        super()
-        this.#content = node.content
+    constructor(current, globe, parent) {
+        super(current, globe, parent)
+        this.#content = current.content
     }
 
-    render(pa){
-        const node = new HtmlNode(pa,this.#content)
+    render(pa = null, data) {
+        const node = new HtmlNode(pa, this.#content)
         return node
     }
 }
 
 export class AstFragmentNode extends Ast {
 
-    render(pa){
-        return this.children[0].render(pa)
+    render(pa = null, data) {
+        return this.children[0].render(pa, data)
     }
 }
 
 export class AstElemntNode extends Ast {
-    render(pa){
+    render(pa = null, data) {
         const node = new GroupNode(pa)
-        node.children = this.children.map(v=>v.render(node))
+        node.children = this.children.map(v => v.render(node, data))
         return node
     }
 }

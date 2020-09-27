@@ -1,6 +1,6 @@
 import Token, { TokenHeadNode, TokenSubHeadNode, TokenTailNode, TokenTextNode, TokenHtmlNode } from './framework/Token.mjs'
-import {Parser} from './framework/Parser.mjs'
-import {Ast} from './framework/Ast.mjs'
+import { Parser } from './framework/Parser.mjs'
+import { Ast } from './framework/Ast.mjs'
 
 Token.scan(document.getElementById('tpl').innerHTML).flatMap(v =>
     [
@@ -24,18 +24,32 @@ Token.scan(document.getElementById('tpl').innerHTML).flatMap(v =>
 })
 
 
-console.log('Parser',Parser.gen(
+console.log('Parser', Parser.gen(
     document.getElementById('tpl').innerHTML
 ))
 
-console.log('AST',window.ast = Ast.gen(
-    document.getElementById('tpl').innerHTML
+console.log('AST', window.ast = Ast.gen(
+    document.getElementById('tpl').innerHTML,
+    ["times", "list"]
 ))
 
+const data = {
+    times: 3,
+    list: [{
+        type: 'text',
+        text: 'test'
+    }, {
+        type: 'input',
+        value: 'test'
+    }, {
 
-console.log('Vnode',window.node = Ast.gen(
-    document.getElementById('tpl').innerHTML
-).render())
+    }]
+}
+
+console.log('Vnode', window.node = Ast.gen(
+    document.getElementById('tpl').innerHTML,
+    ["times", "list"]
+).render(null, data))
 
 
 window.node.mount(document.querySelector('#app'))
