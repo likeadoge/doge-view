@@ -18,17 +18,20 @@
             <ol>
                 <!---loop<value,index>="list"--->
                 <li>
-                    <!---@case="value.type === 'text'"--->
+                    <!---
+                        case="value.type === 'text'"
+                        {click}="()=>alert(list.length)"
+                        [style]="'color:red'"
+                        --->
                     <span>{{list[0].text}}</span>
                     <!--#
                         costom 
-                        @case="value.type === 'input'"
+                        case="value.type === 'input'"
                         loop<index,html>="value.type === 'input'"
                         [value]="value.value"
-                        {click}=""
                     --->
                     <input type="text" />
-                    <!--#@case--->
+                    <!--#case--->
                     <b style="color:rgb(90, 80, 80)">Error Value</b>
                     <!---/--->
                 </li>

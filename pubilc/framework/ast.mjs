@@ -144,8 +144,25 @@ export class AstFragmentNode extends Ast {
 }
 
 export class AstElemntNode extends Ast {
+    #directives = null
+    #events = null
+    #attrs = null
+    constructor(current, globe, parent) {
+        super(current, globe, parent)
+
+        this.#directives = new BindDirectives(
+            current.data.directives,
+            this.scope, 
+            scope => this.scope = scope
+        )
+        this.#events = new BindEvents(current.data.events, this.scope )
+        this.#attrs = new BindAttrs(current.data.attrs, this.scope )
+    }
+
     render(pa = null, data) {
         const node = new GroupNode(pa)
+        this.#events.apply(node,data)
+        this.#attrs.apply(node,data)
         node.children = this.children.map(v => v.render(node, data))
         return node
     }
@@ -187,3 +204,66 @@ class Func {
         )
     }
 }
+
+
+class BindDirectives {
+    #list = []
+    #scope = null
+    constructor(list = [], scope, setScope) {
+        console.log(list.flatMap(v => v.input))
+        this.#scope = Scope.extend(scope, list.flatMap(v => v.input))
+        setScope(this.#scope)
+        
+        this.#list = list.map(({value,input,field})=>({
+            type:field,
+            input,
+            fn: new Func(this.#scope,value)
+        }))
+
+        console.log(this)
+    }
+    getScope() {
+        return this.scope
+    }
+
+    apply(){
+        
+    }
+}
+
+class BindEvents {
+    #list = []
+    #scope = null
+    constructor(list = [], scope) {
+        this.#scope = scope
+        this.#list = list.map(({value,field})=>({
+            type:field,
+            fn: new Func(this.#scope,value)
+        }))
+        
+    }
+
+    apply(node,data){
+        this.#list.forEach(({type,fn})=>{
+            node.bindEvent(type,fn.apply(data))
+        })
+    }
+}
+
+class BindAttrs {
+    #list = []
+    #scope = null
+    constructor(list = [], scope) {
+        this.#scope = scope
+        this.#list = list.map(({value,field})=>({
+            name:field,
+            fn: new Func(this.#scope,value)
+        }))
+    }
+    apply(node,data){
+        this.#list.forEach(({name,fn})=>{
+            node.setAttr(name,fn.apply(data))
+        })
+    }
+}
+

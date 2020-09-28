@@ -34,7 +34,7 @@ export class ViewableNode {
 export class TextNode extends ViewableNode {
     nodeList = []
     text = ''
-    constructor(pa,text) {
+    constructor(pa, text) {
         super(`el_${Math.floor(Math.random() * 1e17)}`, pa)
         this.text = text
     }
@@ -47,27 +47,27 @@ export class TextNode extends ViewableNode {
 
 export class HtmlNode extends ViewableNode {
     html = ''
-    constructor(pa,html) {
+    constructor(pa, html) {
         super(`el_${Math.floor(Math.random() * 1e17)}`, pa)
         this.html = html
     }
 
-    genHtml(){
+    genHtml() {
         return this.html
     }
 
-    render(){}
+    render() { }
 
-    insertTo(){}
+    insertTo() { }
 
-    remove(){}
+    remove() { }
 }
 
 export class GroupNode extends ViewableNode {
     nodeList = []
 
-    attr = {}
-    event = {}
+    #attr = {}
+    #event = {}
     children = []
 
     constructor(pa) {
@@ -89,22 +89,28 @@ export class GroupNode extends ViewableNode {
 
         // 添加属性
         this.nodeList.filter(v => v.setAttribute).forEach(element => {
-            Object.entries(this.attr).forEach(([name, value]) => {
+            Object.entries(this.#attr).forEach(([name, value]) => {
                 element.setAttribute(name, value)
             })
         })
 
         // 绑定事件
         this.nodeList.filter(v => v.addEventListener).forEach(element => {
-            Object.entries(this.event).forEach(([type, listener]) => {
+            Object.entries(this.#event).forEach(([type, listener]) => {
                 element.addEventListener(type, listener)
             })
         })
     }
+    setAttr(name, value) {
+        this.#attr[name] = value
+    }
+    bindEvent(type, event) {
+        this.#event[type] = event
+    }
 
 }
 
-export class RootNode extends ViewableNode{
+export class RootNode extends ViewableNode {
     constructor(pa) {
         super(`el_${Math.floor(Math.random() * 1e17)}`, pa)
     }
@@ -123,14 +129,46 @@ export class RootNode extends ViewableNode{
         this.nodeList = Array.from(target.content.childNodes)
 
     }
-    
-    mount(cntr){
+
+    mount(cntr) {
         cntr.innerHTML = this.genHtml()
         this.render()
         this.insertTo(cntr)
     }
-    
+
 
 }
 
+export class LoopNode extends GroupNode {
+    nodeList = []
+
+    children = []
+
+
+    #items = []
+    constructor(pa) {
+        super(pa)
+    }
+
+
+    render() {
+        this.remove()
+
+        const target = document.createElement('template')
+        target.innerHTML = this.children.map(v => v.genHtml()).join('')
+
+        this.children.forEach(v => {
+            v.render()
+            v.insertTo(target.content)
+        })
+
+        this.nodeList = Array.from(target.content.childNodes)
+    }
+    setAttr(name, value, index) {
+        this.#items[index]?.setAttr(name, value)
+    }
+    bindEvent(type, event, index) {
+        this.#items[index]?.bindEvent(type, event)
+    }
+}
 
