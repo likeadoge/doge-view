@@ -184,7 +184,6 @@ class Scope {
 
     getVars() { return this.#vars }
 }
-
 class Func {
     #body = ''
     #scope = null
@@ -204,7 +203,6 @@ class Func {
         )
     }
 }
-
 
 class BindDirectives {
     #list = []
@@ -230,7 +228,6 @@ class BindDirectives {
         
     }
 }
-
 class BindEvents {
     #list = []
     #scope = null
@@ -249,7 +246,6 @@ class BindEvents {
         })
     }
 }
-
 class BindAttrs {
     #list = []
     #scope = null

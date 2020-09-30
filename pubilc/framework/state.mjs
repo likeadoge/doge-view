@@ -13,8 +13,6 @@ export class Attr {
         // console.log('Attr', this)
     }
 }
-
-
 export class Event {
     static re = `\\{\\s*\\w+\\s*\\}(?:\\s*=\\s*"[\\w|\\W]*?")?`
     field = ""
@@ -28,8 +26,6 @@ export class Event {
         // console.log('Attr', this)
     }
 }
-
-
 
 export class Directive {
     // static re = `\\w+(?:<\\w+(?:,\\w+)*>)?(?:\\([\\w|\\W]+?\\))?`
