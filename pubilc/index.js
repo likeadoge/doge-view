@@ -7,7 +7,7 @@ import {
     LexerOverNode,
     LexerCodeNode,
     LexerTextNode
-} from './framework/Lexer.mjs'
+} from './framework/lexer.js'
 
 
 lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
