@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src='./pubilc/index.js' type="module"></script>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <template id="tpl">
+        <div>
+            <!--loop(new Array(times).fill(null))-->
+            <ol>
+                <!--loop<value,index>(list)-->
+                <li>
+                    <!--if(value.type === 'text')-->
+                    <span>{{value.text}}</span>
+                    <!--else(value.type === 'input')-->
+                    <input type="text" value="{{value.value}}" />
+                    <!--else-->
+                    <b style="color:red">Error Value</b>
+                    <!--end-->
+                </li>
+                <!--over-->
+            </ol>
+            <!--over-->
+        </div>
+    </template>
+</body>
+
+</html>
