@@ -7,8 +7,9 @@ import {
     LexerOverNode,
     LexerCodeNode,
     LexerTextNode
-} from './framework/lexer.js'
+} from './framework/Lexer.js'
 import { parser } from './framework/parser.js'
+import { toAst } from './framework/ast.js'
 
 
 lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
@@ -36,3 +37,21 @@ lexer(document.getElementById('tpl').innerHTML).flatMap(v =>
 
 console.log(parser(document.getElementById('tpl').innerHTML))
 
+const ast = toAst(parser(document.getElementById('tpl').innerHTML),{
+    times:null,
+    list:null,
+})
+console.log(ast )
+
+document.getElementById('ast').innerHTML = ast.toHtml({
+    times: 3,
+        list: [{
+            type: 'text',
+            text: 'test'
+        }, {
+            type: 'input',
+            value: 'test'
+        }, {
+
+        }]
+})

@@ -6,7 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "pre": "npm install",
-        "serve": "node ./server.js -p 8888"
+        "serve": "node ./server.js -p 8889"
     },
     "author": "",
     "license": "ISC",
