@@ -27,8 +27,10 @@ export class AstNode {
 }
 
 export class AstParentNode extends AstNode {
-    children = []
-    toHtml(data) { return this.children.map(v => v.toHtml(data)).join('') }
+    #children = []
+    toHtml(data) { return this.#children.map(v => v.toHtml(data)).join('') }
+    getChildren() { return this.#children }
+    setChildren(children) { this.#children = children }
 }
 
 export class AstHtmlNode extends AstNode {
@@ -64,7 +66,7 @@ export class AstIfNode extends AstParentNode {
     toHtml(data) {
         const s = this.#fn.apply(data)
         if (s) {
-            return this.children.map(v => v.toHtml(data)).join('')
+            return this.getChildren().map(v => v.toHtml(data)).join('')
         } else if (this.else) {
             return this.else.toHtml(data)
         } else {
@@ -93,7 +95,7 @@ export class AstLoopNode extends AstParentNode {
     toHtml(data) {
         const s = this.#fn.apply(data)
         return s.map((value, index) => {
-            return this.children.map(v => v.toHtml(Object.assign(
+            return this.getChildren().map(v => v.toHtml(Object.assign(
                 {},
                 data,
                 this.#valueField ? { [this.#valueField]: value } : null,
@@ -104,13 +106,9 @@ export class AstLoopNode extends AstParentNode {
 
 }
 
-export class AstProgramNode extends AstNode {
-    children = []
+export class AstProgramNode extends AstParentNode {
     constructor(globe) {
         super(globe)
-    }
-    toHtml(data) {
-        return this.children.map(v => v.toHtml(data)).join('')
     }
 }
 
@@ -123,7 +121,7 @@ function dealParserNode(current, parent = null) {
     if (current instanceof ParserProgarmNode) {
         const [node] = current.children
         const astNode = new AstProgramNode(parent)
-        astNode.children = dealParserNode(node, astNode.scope)
+        astNode.setChildren(dealParserNode(node, astNode.scope))
         return [astNode]
     }
 
@@ -151,14 +149,14 @@ function dealParserNode(current, parent = null) {
             if (!over instanceof LexerOverNode) {
                 throw new Error('ast error!!!')
             }
-            astNode.children = dealParserNode(exprList, astNode.scope)
+            astNode.setChildren(dealParserNode(exprList, astNode.scope))
             return [astNode]
         }
 
         if (node instanceof LexerIfNode) {
             const astNode = new AstIfNode(parent, node.data.code)
             const [exprList, tail] = extra
-            astNode.children = dealParserNode(exprList,astNode.scope)
+            astNode.setChildren(dealParserNode(exprList, astNode.scope))
             astNode.else = dealParserNode(tail, parent)[0] || null
             return [astNode]
         }
@@ -172,7 +170,7 @@ function dealParserNode(current, parent = null) {
         if (node instanceof LexerElseNode) {
             const astNode = new AstIfNode(parent, node.data.code)
             const [exprList, tail] = extra
-            astNode.children = dealParserNode(exprList, astNode.scope)
+            astNode.setChildren(dealParserNode(exprList, astNode.scope))
             astNode.else = dealParserNode(tail, parent)[0] || null
             return [astNode]
         }
