@@ -10,6 +10,29 @@
 * loop 循环则以  `<!-- loop<value,index>(cond) -->` 开始其中 `<value,index>` 分别为当前循环对应的元素及索引，以  `<!-- end -->` 为结束。
 * 通过 `{{ /* js code */ }}` 的方式，插入 js 代码
 
+示例：
+```html
+    <template id="tpl">
+        <div>
+            <!--loop(new Array(times).fill(null))-->
+            <ol>
+                <!--loop<value,index>(list)-->
+                <li>
+                    <!--if(value.type === 'text')-->
+                    <span>{{value.text}}</span>
+                    <!--else(value.type === 'input')-->
+                    <input type="text" value="{{value.value}}" />
+                    <!--else-->
+                    <b style="color:red">Error Value</b>
+                    <!--end-->
+                </li>
+                <!--over-->
+            </ol>
+            <!--over-->
+        </div>
+    </template>
+```
+
 
 我们实现的这个模板引擎的解析器主要分为如下几个步骤。先通过一个词法分析器将字符串拆成一个一个单词，然后通过词法分析器将这个一串单词流变成一个词法分析树，之后优化词法树生成抽象语法树。最后将这个抽象语法树添加 render 方法，接受数据生成对应的 html 。接下来的主要内容就是做词法分析。
 
