@@ -187,7 +187,7 @@ export function parser(tmpl){
 
 ```javascript
 class ParserNode {
-    childeren = []
+    children = []
 }
 
 export class ParserProgarmNode extends ParserNode {
@@ -212,7 +212,7 @@ export class ParserIfTailNode extends ParserNode {
             LexerLoopNode,
             LexerIfNode
         )) {
-            node.childeren = node.childeren.concat([
+            node.children = node.children.concat([
                 this.expr_list(),
                 this.#match(Parser.$$)
             ])

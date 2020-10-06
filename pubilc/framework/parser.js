@@ -61,7 +61,7 @@ import {
 } from './lexer.js'
 
 class ParserNode {
-    childeren = []
+    children = []
 }
 
 export class ParserProgarmNode extends ParserNode {
@@ -111,7 +111,7 @@ class Parser {
             LexerLoopNode,
             LexerIfNode
         )) {
-            node.childeren = node.childeren.concat([
+            node.children = node.children.concat([
                 this.expr_list(),
                 this.#match(Parser.$$)
             ])
@@ -130,7 +130,7 @@ class Parser {
             LexerLoopNode,
             LexerIfNode
         )) {
-            node.childeren = node.childeren.concat([
+            node.children = node.children.concat([
                 this.expr(),
                 this.expr_list()
             ])
@@ -141,21 +141,21 @@ class Parser {
         const node = new ParserExprNode()
 
         if (this.#exist(LexerTextNode)) {
-            node.childeren = node.childeren.concat([
+            node.children = node.children.concat([
                 this.#match(LexerTextNode)
             ])
         } else if (this.#exist(LexerCodeNode)) {
-            node.childeren = node.childeren.concat([
+            node.children = node.children.concat([
                 this.#match(LexerCodeNode)
             ])
         } else if (this.#exist(LexerLoopNode)) {
-            node.childeren = node.childeren.concat([
+            node.children = node.children.concat([
                 this.#match(LexerLoopNode),
                 this.expr_list(),
                 this.#match(LexerOverNode)
             ])
         } else if (this.#exist(LexerIfNode)) {
-            node.childeren = node.childeren.concat([
+            node.children = node.children.concat([
                 this.#match(LexerIfNode),
                 this.expr_list(),
                 this.if_tail()
@@ -169,13 +169,13 @@ class Parser {
     if_tail() {
         const node = new ParserIfTailNode()
         if (this.#exist(LexerElseNode)) {
-            node.childeren = node.childeren.concat([
+            node.children = node.children.concat([
                 this.#match(LexerElseNode),
                 this.expr_list(),
                 this.if_tail(),
             ])
         } else if (this.#exist(LexerEndNode)) {
-            node.childeren = node.childeren.concat([
+            node.children = node.children.concat([
                 this.#match(LexerEndNode)
             ])
         } else {
